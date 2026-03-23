@@ -13,7 +13,7 @@ provider "google" {
 }
 
 # GCS Bucket
-resource "google_storage_bucket" "de_camp_bucket" {
+resource "google_storage_bucket" "raw_data_bucket1" {
   name          = var.bucket_name
   location      = var.location
   force_destroy = false
@@ -35,7 +35,7 @@ resource "google_storage_bucket" "de_camp_bucket" {
 }
 
 # BigQuery Dataset
-resource "google_bigquery_dataset" "de_hw_dataset" {
+resource "google_bigquery_dataset" "data_lake_dataset1" {
   dataset_id                  = var.dataset_id
   friendly_name               = "Data Engineering Homework Dataset"
   description                 = "Dataset for data engineering homework assignments"

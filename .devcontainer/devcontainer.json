@@ -1,0 +1,12 @@
+{
+  "name": "DataTalks Capstone Project",
+  "postCreateCommand": "echo $GOOGLE_APPLICATION_CREDENTIALS_JSON > /tmp/gcp_key.json && echo 'export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp_key.json' >> ~/.bashrc",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "hashicorp.terraform",
+        "dbt-labs.dbt-power-user"
+      ]
+    }
+  }
+}
