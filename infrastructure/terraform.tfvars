@@ -1,6 +1,6 @@
-project_id            = "de-camp-01"
+project_id            = "datatalks-de-capstone"
 region                = "us-central1"
 location              = "US"
-bucket_name           = "de-camp-01-terra-bucket"
-dataset_id            = "de_hw_01_dataset"
+bucket_name           = "capstone-bucket-lemieuxjm-2026"
+dataset_id            = "capstone_dataset"
 

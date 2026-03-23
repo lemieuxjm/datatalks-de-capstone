@@ -18,11 +18,9 @@ variable "location" {
 variable "bucket_name" {
   description = "Name of the GCS bucket"
   type        = string
-  default     = "de-camp-01-terra-bucket"
 }
 
 variable "dataset_id" {
   description = "BigQuery dataset ID"
   type        = string
-  default     = "de_hw_01_dataset"
 }
