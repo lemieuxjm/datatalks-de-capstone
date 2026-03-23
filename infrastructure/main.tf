@@ -13,7 +13,7 @@ provider "google" {
 }
 
 # GCS Bucket
-resource "google_storage_bucket" "de_camp_bucket" {
+resource "google_storage_bucket" "raw_data_bucket1" {
   name          = var.bucket_name
   location      = var.location
   force_destroy = false
@@ -34,14 +34,34 @@ resource "google_storage_bucket" "de_camp_bucket" {
   }
 }
 
-# BigQuery Dataset
-resource "google_bigquery_dataset" "de_hw_dataset" {
-  dataset_id                  = var.dataset_id
-  friendly_name               = "Data Engineering Homework Dataset"
-  description                 = "Dataset for data engineering homework assignments"
-  location                    = var.location
-  default_table_expiration_ms = null
-  
+# BigQuery — Raw (Bronze) layer
+resource "google_bigquery_dataset" "raw" {
+  dataset_id  = var.bq_dataset_raw
+  description = "Bronze layer — raw data loaded from GCS"
+  location    = var.location
+
+  labels = {
+    env = "dev"
+  }
+}
+
+# BigQuery — Silver layer
+resource "google_bigquery_dataset" "silver" {
+  dataset_id  = var.bq_dataset_silver
+  description = "Silver layer — cleaned and conformed data"
+  location    = var.location
+
+  labels = {
+    env = "dev"
+  }
+}
+
+# BigQuery — Gold layer
+resource "google_bigquery_dataset" "gold" {
+  dataset_id  = var.bq_dataset_gold
+  description = "Gold layer — aggregated, partitioned, analyst-ready"
+  location    = var.location
+
   labels = {
     env = "dev"
   }
