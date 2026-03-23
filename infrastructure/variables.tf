@@ -20,7 +20,17 @@ variable "bucket_name" {
   type        = string
 }
 
-variable "dataset_id" {
-  description = "BigQuery dataset ID"
+variable "bq_dataset_raw" {
+  description = "BigQuery bronze dataset"
+  type        = string
+}
+
+variable "bq_dataset_silver" {
+  description = "BigQuery silver dataset"
+  type        = string
+}
+
+variable "bq_dataset_gold" {
+  description = "BigQuery gold dataset"
   type        = string
 }
