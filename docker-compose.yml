@@ -1,0 +1,18 @@
+services:
+  kestra:
+    image: kestra/kestra:latest
+    env_file:
+      - .env_encoded    
+    pull_policy: always
+    user: root
+    command: server local
+    ports:
+      - "8080:8080"
+    volumes:
+      - kestra_data:/app/storage
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+    restart: unless-stopped
+
+volumes:
+  kestra_data:
