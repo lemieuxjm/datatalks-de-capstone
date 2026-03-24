@@ -24,7 +24,7 @@ tasks:
     type: io.kestra.plugin.core.kv.Set
     key: GCP_DATASET_RAW
     kvType: STRING
-    value: capstone_raw  # raw dataset name
+    value: capstone_raw  # raw dataset name 
 
   - id: gcp_dataset_silver
     type: io.kestra.plugin.core.kv.Set
