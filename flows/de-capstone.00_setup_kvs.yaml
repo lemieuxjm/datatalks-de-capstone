@@ -30,10 +30,10 @@ tasks:
     type: io.kestra.plugin.core.kv.Set
     key: GCP_DATASET_SILVER
     kvType: STRING
-    value: capstone_silver
+    value: capstone_silver # silver dataset name
 
   - id: gcp_dataset_gold
     type: io.kestra.plugin.core.kv.Set
     key: GCP_DATASET_GOLD
     kvType: STRING
-    value: capstone_gold
+    value: capstone_gold # gold dataset name
