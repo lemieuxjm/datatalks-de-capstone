@@ -1,0 +1,7 @@
+id: 03_load_to_bq_raw
+namespace: de-capstone
+
+tasks:
+  - id: hello
+    type: io.kestra.plugin.core.log.Log
+    message: Hello World! 🚀
