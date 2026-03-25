@@ -1,0 +1,7 @@
+id: 02_ingest_to_gcs
+namespace: de-capstone
+
+tasks:
+  - id: hello
+    type: io.kestra.plugin.core.log.Log
+    message: Hello World! 🚀

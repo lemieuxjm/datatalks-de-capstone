@@ -1,0 +1,7 @@
+id: 04_dbt_bq_silver_gold
+namespace: de-capstone
+
+tasks:
+  - id: hello
+    type: io.kestra.plugin.core.log.Log
+    message: Hello World! 🚀
