@@ -1,7 +1,38 @@
 id: 02_ingest_to_gcs
 namespace: de-capstone
+description: Load data to GCS/Raw
+
+inputs:
+  - id: csv_url
+    type: STRING
+    description: "URL of the source CSV file"
+    defaults: "https://data.cms.gov/sites/default/files/2026-03/c2e42f20-57f6-4bbf-95a7-5267cec3f77c/Medicare%20Monthly%20Enrollment%20Data_December%202025.csv"
+
+  - id: destination_filename
+    type: STRING
+    description: "Filename to use in GCS"
+    defaults: "Medicare_Monthly_Enrollment_20251231.csv"
+
+  - id: gcs_folder
+    type: STRING
+    description: "Folder path within bucket"
+    defaults: "Raw"
 
 tasks:
-  - id: hello
-    type: io.kestra.plugin.core.log.Log
-    message: Hello World! 🚀
+  - id: download_csv
+    type: io.kestra.plugin.core.http.Download
+    uri: "{{ inputs.csv_url }}"
+
+  - id: upload_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    from: "{{ outputs.download_csv.uri }}"
+    to: "gs://{{ kv('GCP_BUCKET_NAME') }}/{{ inputs.gcs_folder }}/{{ inputs.destination_filename }}"
+
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{ secret('GCP_SERVICE_ACCOUNT') }}"      
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_NAME')}}"  
