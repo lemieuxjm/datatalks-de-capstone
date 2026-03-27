@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: capstone_raw
+    database: "datatalks-de-capstone"
+    schema: capstone_raw
+    tables:
+      - name: medicare_monthly_enrollment_20251231
+        description: "Raw Medicare monthly enrollment data loaded from CMS via Kestra"
