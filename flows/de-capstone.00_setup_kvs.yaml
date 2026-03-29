@@ -37,3 +37,9 @@ tasks:
     key: GCP_DATASET_GOLD
     kvType: STRING
     value: capstone_gold # gold dataset name
+
+  - id: dbt_cloud_api_token
+    type: io.kestra.plugin.core.kv.Set
+    key: DBT_CLOUD_API_TOKEN
+    kvType: STRING
+    value: dbtc_DS-0M_oEMKWYNTRXe-KpAhOz0Q_QDPB-91A5WLLksw4GjCwJfk
