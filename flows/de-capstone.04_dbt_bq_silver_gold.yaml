@@ -1,7 +1,35 @@
 id: 04_dbt_bq_silver_gold
 namespace: de-capstone
+description: Trigger dbt Cloud job to build silver and gold layers
 
 tasks:
-  - id: hello
+  - id: trigger_dbt_job
+    type: io.kestra.plugin.core.http.Request
+    uri: "https://th731.us1.dbt.com/api/v2/accounts/70471823547483/jobs/70471823578591/run/"
+    method: POST
+    headers:
+      Authorization: "Token {{kv('DBT_CLOUD_API_TOKEN')}}"
+      Content-Type: "application/json"
+    body: |
+      {
+        "cause": "Triggered by Kestra"
+      }
+
+  - id: get_run_id
+    type: io.kestra.plugin.core.debug.Return
+    format: "{{ outputs.trigger_dbt_job.body }}"
+
+  - id: wait_for_completion
+    type: io.kestra.plugin.core.flow.Sleep
+    duration: PT3M
+
+  - id: check_job_status
+    type: io.kestra.plugin.core.http.Request
+    uri: "https://th731.us1.dbt.com/api/v2/accounts/70471823547483/runs/?job_definition_id=70471823578591&order_by=-id&limit=1"
+    method: GET
+    headers:
+      Authorization: "Token {{kv('DBT_CLOUD_API_TOKEN')}}"
+
+  - id: log_status
     type: io.kestra.plugin.core.log.Log
-    message: Hello World! 🚀
+    message: "dbt Cloud job status: {{ outputs.check_job_status.body }}"
