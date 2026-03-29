@@ -43,7 +43,3 @@ tasks:
     key: DBT_CLOUD_API_TOKEN
     kvType: STRING
     value: dbtc_DS-0M_oEMKWYNTRXe-KpAhOz0Q_QDPB-91A5WLLksw4GjCwJfk
-
-
-
-
