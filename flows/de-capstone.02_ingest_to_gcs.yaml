@@ -11,6 +11,7 @@ inputs:
   - id: destination_filename
     type: STRING
     description: "Filename to use in GCS"
+
     defaults: "Medicare_Monthly_Enrollment_20251231.csv"
 
   - id: gcs_folder
