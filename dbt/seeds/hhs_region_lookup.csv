@@ -1,0 +1,57 @@
+state_abbr,hhs_region
+CT,Region 1 - New England
+ME,Region 1 - New England
+MA,Region 1 - New England
+NH,Region 1 - New England
+RI,Region 1 - New England
+VT,Region 1 - New England
+NJ,Region 2 - New York/New Jersey
+NY,Region 2 - New York/New Jersey
+PR,Region 2 - New York/New Jersey
+VI,Region 2 - New York/New Jersey
+DE,Region 3 - Mid-Atlantic
+DC,Region 3 - Mid-Atlantic
+MD,Region 3 - Mid-Atlantic
+PA,Region 3 - Mid-Atlantic
+VA,Region 3 - Mid-Atlantic
+WV,Region 3 - Mid-Atlantic
+AL,Region 4 - Southeast
+FL,Region 4 - Southeast
+GA,Region 4 - Southeast
+KY,Region 4 - Southeast
+MS,Region 4 - Southeast
+NC,Region 4 - Southeast
+SC,Region 4 - Southeast
+TN,Region 4 - Southeast
+IL,Region 5 - Midwest
+IN,Region 5 - Midwest
+MI,Region 5 - Midwest
+MN,Region 5 - Midwest
+OH,Region 5 - Midwest
+WI,Region 5 - Midwest
+AR,Region 6 - South Central
+LA,Region 6 - South Central
+NM,Region 6 - South Central
+OK,Region 6 - South Central
+TX,Region 6 - South Central
+IA,Region 7 - Great Plains
+KS,Region 7 - Great Plains
+MO,Region 7 - Great Plains
+NE,Region 7 - Great Plains
+CO,Region 8 - Mountain
+MT,Region 8 - Mountain
+ND,Region 8 - Mountain
+SD,Region 8 - Mountain
+UT,Region 8 - Mountain
+WY,Region 8 - Mountain
+AZ,Region 9 - Pacific
+CA,Region 9 - Pacific
+HI,Region 9 - Pacific
+NV,Region 9 - Pacific
+AS,Region 9 - Pacific
+GU,Region 9 - Pacific
+MP,Region 9 - Pacific
+AK,Region 10 - Northwest
+ID,Region 10 - Northwest
+OR,Region 10 - Northwest
+WA,Region 10 - Northwest
