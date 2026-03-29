@@ -10,12 +10,20 @@ inputs:
 
   - id: destination_filename
     type: STRING
+<<<<<<< Updated upstream
     description: "Filename to use in GCS"
+=======
+    description: "Filename to use in GCS (e.g. mydata.csv)"
+>>>>>>> Stashed changes
     defaults: "Medicare_Monthly_Enrollment_20251231.csv"
 
   - id: gcs_folder
     type: STRING
+<<<<<<< Updated upstream
     description: "Folder path within bucket"
+=======
+    description: "Folder path within the bucket (e.g. bronze/dataset)"
+>>>>>>> Stashed changes
     defaults: "Raw"
 
 tasks:
