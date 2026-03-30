@@ -5,5 +5,5 @@ sources:
     database: "datatalks-de-capstone"
     schema: capstone_raw
     tables:
-      - name: medicare_monthly_enrollment_20251231
+      - name: medicare_monthly_enrollment_raw
         description: "Raw Medicare monthly enrollment data loaded from CMS via Kestra"
