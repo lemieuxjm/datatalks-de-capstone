@@ -2,6 +2,8 @@
 
 ## Medicare Enrollment Trends & Inflation Analysis (2013–2025)
 
+Author: June Lemieux
+
 This project builds an end-to-end data pipeline that ingests, transforms, and visualizes 13 years of Medicare monthly enrollment data from CMS (Centers for Medicare & Medicaid Services), enriched with US inflation data from FRED (Federal Reserve Economic Data).
 
 ---
