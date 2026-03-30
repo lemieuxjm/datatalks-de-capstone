@@ -5,6 +5,9 @@ services:
     pull_policy: always
     user: root
     command: server local --flow-path /flows
+    environment:
+      KESTRA_PLUGINS: >
+        io.kestra.plugin:plugin-gcp:LATEST
     ports:
       - "8080:8080"
     volumes:
