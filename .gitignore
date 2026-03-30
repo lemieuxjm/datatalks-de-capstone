@@ -213,4 +213,4 @@ service-account.json
 profiles.yml
 
 # kestra
-.plugins/
+plugins/
