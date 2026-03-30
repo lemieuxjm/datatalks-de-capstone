@@ -1,146 +1,98 @@
 id: 03_load_to_bq_raw
 namespace: de-capstone
-description: Download a CSV file from GCS and load it into a BigQuery table.
+description: Batch load yearly CSV files from GCS to BigQuery raw table
 
 tasks:
-  - id: load_from_GCS_to_bigquery
-    type: io.kestra.plugin.gcp.bigquery.LoadFromGcs
-    from: 
-      - "gs://capstone-bucket-lemieuxjm-2026/Raw/Medicare_Monthly_Enrollment_20251231.csv"
-    destinationTable: "{{kv('GCP_PROJECT_ID')}}.capstone_raw.medicare_monthly_enrollment_20251231"
-    schema:
-      fields:
-        - name: "YEAR"
-          type: "STRING"
-        - name: "MONTH"
-          type: "STRING"
-        - name: "BENE_GEO_LVL"
-          type: "STRING"
-        - name: "BENE_STATE_ABRVTN"
-          type: "STRING"
-        - name: "BENE_STATE_DESC"
-          type: "STRING"
-        - name: "BENE_COUNTY_DESC"
-          type: "STRING"
-        - name: "BENE_FIPS_CD"
-          type: "STRING"
-        - name: "TOT_BENES"
-          type: "STRING"
-        - name: "ORGNL_MDCR_BENES"
-          type: "STRING"
-        - name: "MA_AND_OTH_BENES"
-          type: "STRING"
-        - name: "AGED_TOT_BENES"
-          type: "STRING"
-        - name: "AGED_ESRD_BENES"
-          type: "STRING"
-        - name: "AGED_NO_ESRD_BENES"
-          type: "STRING"
-        - name: "DSBLD_TOT_BENES"
-          type: "STRING"
-        - name: "DSBLD_ESRD_AND_ESRD_ONLY_BENES"
-          type: "STRING"
-        - name: "DSBLD_NO_ESRD_BENES"
-          type: "STRING"
-        - name: "MALE_TOT_BENES"
-          type: "STRING"
-        - name: "FEMALE_TOT_BENES"
-          type: "STRING"
-        - name: "WHITE_TOT_BENES"
-          type: "STRING"
-        - name: "BLACK_TOT_BENES"
-          type: "STRING"
-        - name: "API_TOT_BENES"
-          type: "STRING"
-        - name: "HSPNC_TOT_BENES"
-          type: "STRING"
-        - name: "NATIND_TOT_BENES"
-          type: "STRING"
-        - name: "OTHR_TOT_BENES"
-          type: "STRING"
-        - name: "AGE_LT_25_BENES"
-          type: "STRING"
-        - name: "AGE_25_TO_44_BENES"
-          type: "STRING"
-        - name: "AGE_45_TO_64_BENES"
-          type: "STRING"
-        - name: "AGE_65_TO_69_BENES"
-          type: "STRING"
-        - name: "AGE_70_TO_74_BENES"
-          type: "STRING"
-        - name: "AGE_75_TO_79_BENES"
-          type: "STRING"
-        - name: "AGE_80_TO_84_BENES"
-          type: "STRING"
-        - name: "AGE_85_TO_89_BENES"
-          type: "STRING"
-        - name: "AGE_90_TO_94_BENES"
-          type: "STRING"
-        - name: "AGE_GT_94_BENES"
-          type: "STRING"
-        - name: "DUAL_TOT_BENES"
-          type: "STRING"
-        - name: "FULL_DUAL_TOT_BENES"
-          type: "STRING"
-        - name: "PART_DUAL_TOT_BENES"
-          type: "STRING"
-        - name: "NODUAL_TOT_BENES"
-          type: "STRING"
-        - name: "QMB_ONLY_BENES"
-          type: "STRING"
-        - name: "QMB_PLUS_BENES"
-          type: "STRING"
-        - name: "SLMB_ONLY_BENES"
-          type: "STRING"
-        - name: "SLMB_PLUS_BENES"
-          type: "STRING"
-        - name: "QDWI_QI_BENES"
-          type: "STRING"
-        - name: "OTHR_FULL_DUAL_MDCD_BENES"
-          type: "STRING"
-        - name: "A_B_TOT_BENES"
-          type: "STRING"
-        - name: "A_B_ORGNL_MDCR_BENES"
-          type: "STRING"
-        - name: "A_B_MA_AND_OTH_BENES"
-          type: "STRING"
-        - name: "A_TOT_BENES"
-          type: "STRING"
-        - name: "A_ORGNL_MDCR_BENES"
-          type: "STRING"
-        - name: "A_MA_AND_OTH_BENES"
-          type: "STRING"
-        - name: "B_TOT_BENES"
-          type: "STRING"
-        - name: "B_ORGNL_MDCR_BENES"
-          type: "STRING"
-        - name: "B_MA_AND_OTH_BENES"
-          type: "STRING"
-        - name: "PRSCRPTN_DRUG_TOT_BENES"
-          type: "STRING"
-        - name: "PRSCRPTN_DRUG_PDP_BENES"
-          type: "STRING"
-        - name: "PRSCRPTN_DRUG_MAPD_BENES"
-          type: "STRING"
-        - name: "PRSCRPTN_DRUG_DEEMED_ELIGIBLE_FULL_LIS_BENES"
-          type: "STRING"
-        - name: "PRSCRPTN_DRUG_FULL_LIS_BENES"
-          type: "STRING"
-        - name: "PRSCRPTN_DRUG_PARTIAL_LIS_BENES"
-          type: "STRING"
-        - name: "PRSCRPTN_DRUG_NO_LIS_BENES"
-          type: "STRING"
-    format: CSV
-    csvOptions:
-      skipLeadingRows: 1 # Assuming the CSV file has a header row
-    createDisposition: CREATE_IF_NEEDED
-    writeDisposition: WRITE_TRUNCATE # Overwrite the table if it exists
+  - id: truncate_table
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      TRUNCATE TABLE `{{ kv('GCP_PROJECT_ID') }}.capstone_raw.medicare_monthly_enrollment_raw`
+
+  - id: batch_load
+    type: io.kestra.plugin.core.flow.ForEach
+    values: "{{ kv('YEARS') }}"
+    tasks:
+      - id: load_to_bq
+        type: io.kestra.plugin.gcp.bigquery.LoadFromGcs
+        from:
+          - "gs://{{ kv('GCP_BUCKET_NAME') }}/Raw/Medicare_Monthly_Enrollment_{{ taskrun.value }}.csv"
+        destinationTable: "{{ kv('GCP_PROJECT_ID') }}.capstone_raw.medicare_monthly_enrollment_raw"
+        schema:
+          fields:
+            - {name: "YEAR", type: "STRING"}
+            - {name: "MONTH", type: "STRING"}
+            - {name: "BENE_GEO_LVL", type: "STRING"}
+            - {name: "BENE_STATE_ABRVTN", type: "STRING"}
+            - {name: "BENE_STATE_DESC", type: "STRING"}
+            - {name: "BENE_COUNTY_DESC", type: "STRING"}
+            - {name: "BENE_FIPS_CD", type: "STRING"}
+            - {name: "TOT_BENES", type: "STRING"}
+            - {name: "ORGNL_MDCR_BENES", type: "STRING"}
+            - {name: "MA_AND_OTH_BENES", type: "STRING"}
+            - {name: "AGED_TOT_BENES", type: "STRING"}
+            - {name: "AGED_ESRD_BENES", type: "STRING"}
+            - {name: "AGED_NO_ESRD_BENES", type: "STRING"}
+            - {name: "DSBLD_TOT_BENES", type: "STRING"}
+            - {name: "DSBLD_ESRD_AND_ESRD_ONLY_BENES", type: "STRING"}
+            - {name: "DSBLD_NO_ESRD_BENES", type: "STRING"}
+            - {name: "MALE_TOT_BENES", type: "STRING"}
+            - {name: "FEMALE_TOT_BENES", type: "STRING"}
+            - {name: "WHITE_TOT_BENES", type: "STRING"}
+            - {name: "BLACK_TOT_BENES", type: "STRING"}
+            - {name: "API_TOT_BENES", type: "STRING"}
+            - {name: "HSPNC_TOT_BENES", type: "STRING"}
+            - {name: "NATIND_TOT_BENES", type: "STRING"}
+            - {name: "OTHR_TOT_BENES", type: "STRING"}
+            - {name: "AGE_LT_25_BENES", type: "STRING"}
+            - {name: "AGE_25_TO_44_BENES", type: "STRING"}
+            - {name: "AGE_45_TO_64_BENES", type: "STRING"}
+            - {name: "AGE_65_TO_69_BENES", type: "STRING"}
+            - {name: "AGE_70_TO_74_BENES", type: "STRING"}
+            - {name: "AGE_75_TO_79_BENES", type: "STRING"}
+            - {name: "AGE_80_TO_84_BENES", type: "STRING"}
+            - {name: "AGE_85_TO_89_BENES", type: "STRING"}
+            - {name: "AGE_90_TO_94_BENES", type: "STRING"}
+            - {name: "AGE_GT_94_BENES", type: "STRING"}
+            - {name: "DUAL_TOT_BENES", type: "STRING"}
+            - {name: "FULL_DUAL_TOT_BENES", type: "STRING"}
+            - {name: "PART_DUAL_TOT_BENES", type: "STRING"}
+            - {name: "NODUAL_TOT_BENES", type: "STRING"}
+            - {name: "QMB_ONLY_BENES", type: "STRING"}
+            - {name: "QMB_PLUS_BENES", type: "STRING"}
+            - {name: "SLMB_ONLY_BENES", type: "STRING"}
+            - {name: "SLMB_PLUS_BENES", type: "STRING"}
+            - {name: "QDWI_QI_BENES", type: "STRING"}
+            - {name: "OTHR_FULL_DUAL_MDCD_BENES", type: "STRING"}
+            - {name: "A_B_TOT_BENES", type: "STRING"}
+            - {name: "A_B_ORGNL_MDCR_BENES", type: "STRING"}
+            - {name: "A_B_MA_AND_OTH_BENES", type: "STRING"}
+            - {name: "A_TOT_BENES", type: "STRING"}
+            - {name: "A_ORGNL_MDCR_BENES", type: "STRING"}
+            - {name: "A_MA_AND_OTH_BENES", type: "STRING"}
+            - {name: "B_TOT_BENES", type: "STRING"}
+            - {name: "B_ORGNL_MDCR_BENES", type: "STRING"}
+            - {name: "B_MA_AND_OTH_BENES", type: "STRING"}
+            - {name: "PRSCRPTN_DRUG_TOT_BENES", type: "STRING"}
+            - {name: "PRSCRPTN_DRUG_PDP_BENES", type: "STRING"}
+            - {name: "PRSCRPTN_DRUG_MAPD_BENES", type: "STRING"}
+            - {name: "PRSCRPTN_DRUG_DEEMED_ELIGIBLE_FULL_LIS_BENES", type: "STRING"}
+            - {name: "PRSCRPTN_DRUG_FULL_LIS_BENES", type: "STRING"}
+            - {name: "PRSCRPTN_DRUG_PARTIAL_LIS_BENES", type: "STRING"}
+            - {name: "PRSCRPTN_DRUG_NO_LIS_BENES", type: "STRING"}
+        format: CSV
+        csvOptions:
+          skipLeadingRows: 1
+        createDisposition: CREATE_IF_NEEDED
+        writeDisposition: WRITE_APPEND
+
+      - id: wait
+        type: io.kestra.plugin.core.flow.Sleep
+        duration: PT30S
 
 pluginDefaults:
   - type: io.kestra.plugin.gcp
     values:
       serviceAccount: "{{ secret('GCP_SERVICE_ACCOUNT') }}"
-      projectId: "{{kv('GCP_PROJECT_ID')}}"
-      location: "{{kv('GCP_LOCATION')}}"
-      bucket: "{{kv('GCP_BUCKET_NAME')}}" 
-
+      projectId: "{{ kv('GCP_PROJECT_ID') }}"
+      location: "{{ kv('GCP_LOCATION') }}"
+      bucket: "{{ kv('GCP_BUCKET_NAME') }}"
