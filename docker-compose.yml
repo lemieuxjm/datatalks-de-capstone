@@ -1,13 +1,14 @@
 services:
   kestra:
-    image: kestra/kestra:latest
-    env_file: .env_encoded    
+    image: kestra/kestra:v0.22.0
+    env_file: .env_encoded
     pull_policy: always
     user: root
     command: server local --flow-path /flows
     environment:
       KESTRA_PLUGINS: >
         io.kestra.plugin:plugin-gcp:LATEST
+      JAVA_OPTS: "-Djava.io.tmpdir=/app/tmp"
     ports:
       - "8080:8080"
     volumes:
@@ -15,7 +16,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp:/tmp
       - ./flows:/flows
+      - kestra_tmp:/app/tmp
     restart: unless-stopped
 
 volumes:
   kestra_data:
+  kestra_tmp:

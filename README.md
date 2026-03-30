@@ -143,15 +143,34 @@ datatalks-de-capstone/
 4. Download the service account JSON key file
 
 ### dbt Cloud Setup
+
+> **Note for reviewers:** Flow `04` triggers a dbt Cloud job via API. You must set up your own dbt Cloud account and job, then update two flow files with your credentials before running flow `04`. The original author's dbt Cloud credentials in this repo are tied to a specific account and will not work for reproduction.
+
 1. Create a free dbt Cloud account at [cloud.getdbt.com](https://cloud.getdbt.com)
 2. Create a new project connected to this GitHub repo and your BigQuery project
-3. Create a Service Account Token (Account Settings → API Tokens → Service Account Tokens → New Token → Job Admin permission)
+3. Create a Service Account Token: **Account Settings → API Tokens → Service Account Tokens → New Token → Job Admin permission**
 4. Create a dbt Cloud job named `de_capstone_silver_gold` with commands: `dbt seed`, `dbt run`, `dbt test`
-5. Note your dbt Cloud Account ID, Project ID, and Job ID from the job URL — the format is `https://YOUR_HOST/deploy/{account_id}/projects/{project_id}/jobs/{job_id}`
-6. Update `de-capstone_04_dbt_bq_silver_gold.yaml` with your Account ID and Job ID
-7. Add your Service Account Token to the Kestra KV Store as `DBT_CLOUD_API_TOKEN`
+5. Note your dbt Cloud **Account ID**, **Job ID**, and **host URL** from the job URL — the format is:
+   ```
+   https://<YOUR_HOST>/deploy/<account_id>/projects/<project_id>/jobs/<job_id>
+   ```
+6. Update `flows/de-capstone_00_setup_kvs.yaml` — replace the token value with your own:
+   ```yaml
+   - id: dbt_cloud_api_token
+     type: io.kestra.plugin.core.kv.Set
+     key: DBT_CLOUD_API_TOKEN
+     kvType: STRING
+     value: <your_dbt_cloud_service_account_token>
+   ```
+7. Update `flows/de-capstone_04_dbt_bq_silver_gold.yaml` — replace the account ID, job ID, and host in both URIs:
+   ```yaml
+   # Trigger URI:
+   uri: "https://<YOUR_HOST>/api/v2/accounts/<your_account_id>/jobs/<your_job_id>/run/"
 
-> **Important:** The dbt Cloud Service Account Token stored in this repo's KV store is tied to a trial account and will expire. If flow `04` fails with an authentication error, generate a new Service Account Token in your own dbt Cloud account, update the job IDs in `de-capstone_04_dbt_bq_silver_gold.yaml` to match your job, and add your token to the Kestra KV Store.
+   # Status check URI:
+   uri: "https://<YOUR_HOST>/api/v2/accounts/<your_account_id>/runs/?job_definition_id=<your_job_id>&order_by=-id&limit=1"
+   ```
+   > Note: The host (e.g. `th731.us1.dbt.com`) is specific to each dbt Cloud account. Use the host from your own dbt Cloud job URL.
 
 ### Local Requirements
 - Docker Desktop
@@ -181,15 +200,10 @@ docker compose up -d
 ```
 Access Kestra at [http://localhost:8080](http://localhost:8080)
 
+> **Note:** The `docker-compose.yml` uses `kestra/kestra:v0.22.0`. This version is required — using `latest` will result in a plugin version mismatch that prevents the GCP flows from loading. Kestra `v0.22.0` automatically downloads the compatible GCP plugin on first startup, which may add 1–2 minutes to initial boot time.
+
 ### Step 4: Import Flows into Kestra
-In the Kestra UI:
-1. Go to **Flows** → **Create**
-2. Import each YAML file from the `/flows` directory in this order:
-   - `de-capstone_00_setup_kvs.yaml`
-   - `de-capstone_01_verify_gcp_setup.yaml`
-   - `de-capstone_02_ingest_to_gcs.yaml`
-   - `de-capstone_03_load_to_bq_raw.yaml`
-   - `de-capstone_04_dbt_bq_silver_gold.yaml`
+Flows are automatically loaded from the `/flows` directory at startup via the `--flow-path /flows` command in `docker-compose.yml`. Verify all 5 flows are present in the Kestra UI under the `de-capstone` namespace before proceeding.
 
 ### Step 5: Configure KV Store
 In Kestra UI, go to **Namespaces** → `de-capstone` → **KV Store** and add:
@@ -225,6 +239,8 @@ Drops and recreates the raw table, then appends each year's data sequentially wi
 
 **Flow 04 — dbt Transformations**
 Triggers the dbt Cloud job which runs `dbt seed`, `dbt run`, and `dbt test`. Builds silver views and gold table in BigQuery.
+
+> **Prerequisite for Flow 04:** You must complete the dbt Cloud setup steps in the Prerequisites section above and update the flow files with your own credentials before running this flow.
 
 ### Step 8: Verify Results
 Run these queries in BigQuery to validate:
@@ -272,3 +288,4 @@ docker compose down -v
 - **Float64 enrollment values:** CMS publishes enrollment counts with `.0` decimal formatting. Values are stored as FLOAT64 in BigQuery rather than INT64.
 - **County data excluded:** The source data includes National, State, and County geographic levels. Only State-level records are used in the gold layer, aggregated to HHS Regions.
 - **dbt Cloud free tier:** The free tier does not support personal API tokens. A Service Account Token is used instead for Kestra integration.
+- **Kestra version pinned to v0.22.0:** The `docker-compose.yml` pins Kestra to `v0.22.0` to ensure plugin compatibility. Using `kestra/kestra:latest` causes a version mismatch between the Kestra core and the GCP plugin, preventing flows from loading.

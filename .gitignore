@@ -211,3 +211,6 @@ service-account.json
 
 # dbt
 profiles.yml
+
+# kestra
+.plugins/
