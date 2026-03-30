@@ -6,7 +6,7 @@
 {% set clean_float = 'REPLACE({col}, \'*\', \'0\')' %}
 
 with source as (
-    select * from {{ source('capstone_raw', 'medicare_monthly_enrollment_20251231') }}
+    select * from {{ source('capstone_raw', 'medicare_monthly_enrollment_raw') }}
 ),
 
 renamed as (
