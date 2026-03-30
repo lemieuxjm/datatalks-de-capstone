@@ -43,3 +43,9 @@ tasks:
     key: DBT_CLOUD_API_TOKEN
     kvType: STRING
     value: dbtc_DS-0M_oEMKWYNTRXe-KpAhOz0Q_QDPB-91A5WLLksw4GjCwJfk
+
+  - id: years
+    type: io.kestra.plugin.core.kv.Set
+    key: YEARS
+    kvType: JSON
+    value: "[2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025]"    
