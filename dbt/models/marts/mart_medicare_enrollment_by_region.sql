@@ -110,4 +110,4 @@ indexed as (
         on a.hhs_region = b.hhs_region
 )
 
-select * from indexed
+select * from indexed 
