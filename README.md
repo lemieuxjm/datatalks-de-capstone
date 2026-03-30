@@ -14,11 +14,16 @@ This project builds an end-to-end data pipeline that ingests, transforms, and vi
 
 The dashboard has two pages:
 
-**Page 1 — Enrollment Trends Over Time**
+**Page 1 — Enrollment by US Region and Race/Ethnicity**
+Shows Medicare enrollment broken out by race/ethnicity across the 10 HHS Regions for a selected year. Region 4 (Southeast) has the largest enrollment, while Region 9 (Pacific) shows a distinctly higher Hispanic/Latinx proportion relative to other regions.
+
+![Sample Enrollment by US Region and Race/Ethnicity](sample_data/Sample_Classification_DataViz.png)
+
+**Page 2 — Enrollment Trends Over Time**
 Compares the relative change in Total, Original Medicare, and Medicare Advantage (MA) enrollments since 2013, overlaid with the national inflation rate index. Select one or more HHS Regions to compare regional trends. Key insight: MA plan adoption has grown nearly 3x since 2013 across all regions, while Original Medicare enrollment has steadily declined — a structural shift independent of inflation.
 
-**Page 2 — Enrollment by US Region and Race/Ethnicity**
-Shows Medicare enrollment broken out by race/ethnicity across the 10 HHS Regions for a selected year. Region 4 (Southeast) has the largest enrollment, while Region 9 (Pacific) shows a distinctly higher Hispanic/Latinx proportion relative to other regions.
+![Sample Enrollment Changes since 2013](sample_data/Sample_Temporal_DataViz.png)
+
 
 ---
 
@@ -79,6 +84,8 @@ GitHub (yearly CSV files)
 Data is ingested year by year (2013–2025) with a 30-second pause between each year to simulate batch processing. Each year's CSV is stored as a separate file in GCS and appended to the BigQuery raw table sequentially.
 
 ### dbt Transformations
+
+![dbt Transformation Visualization](sample_data/dbt_dataflow.png)
 
 **Silver Layer (views):**
 - `stg_medicare_enrollment_annual` — annual summary rows, all STRING columns cast to FLOAT64, asterisks replaced with 0
